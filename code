@@ -1,0 +1,201 @@
+GlowScript 2.7 VPython
+
+## CREATED BY ANDREW MANCHESTER
+
+from __future__ import division, print_function
+from visual import *
+scene.width = 800
+scene.height = 600
+
+## CONSTANTS
+oofpez = 9e9
+x_init = -1
+x_final = 1
+ax = 0 #initial/incremented value
+ay = ((1) + ((1.85 * ax**4)**2))**(1/2) #actual function
+sx = 0.001 #step size in x for riemann sum
+Q = 2e-9
+Nq = 500   # number of point charges used to model a uniformly charged rod
+dQ = Q/Nq
+scalefactor = 1.0
+L = 0
+u = 0.25
+##Calculate L
+while ax <= x_final:    #calculating half of the integral from 0 to 1
+    L = L + (ay * sx)
+    ax = ax + sx
+L = 2 * L   #multiplying integral by 2 due to symmetry
+print(L)
+dL = L/Nq
+def dxq (xq): 
+    dxq = (((1) + ((1.85 * xq**4)**2))**(1/2)) * (dL)
+    return dxq
+
+## OBJECTS
+
+## display Nq spheres
+xq = x_init
+yq = 0.37 * xq**5
+while xq < x_final:  #place charges along rod
+    sphere(pos=vector(xq,yq,0), radius=.01, color=color.red)
+    xq = xq + dxq(xq)
+    yq = 0.37 * xq**5
+    
+# Arrow Positions
+Ax1 = x_init + 0.05
+Ax2 = x_init + 0.25
+Ax3 = x_init + 0.5
+Ax4 = x_init + 0.75
+Ax5 = x_init + 1
+Ax6 = x_init + 1.25
+Ax7 = x_init + 1.5
+Ax8 = x_init + 1.75
+Ax9 = x_init + 1.95
+
+Ay1 = (0.37)*((Ax1)**5) + 0.02
+Ay2 = (0.37)*((Ax2)**5) + 0.02
+Ay3 = (0.37)*((Ax3)**5) + 0.02
+Ay4 = (0.37)*((Ax4)**5) + 0.02
+Ay5 = (0.37)*((Ax5)**5) + 0.02
+Ay6 = (0.37)*((Ax6)**5) + 0.02
+Ay7 = (0.37)*((Ax7)**5) + 0.02
+Ay8 = (0.37)*((Ax8)**5) + 0.02
+Ay9 = (0.37)*((Ax9)**5) + 0.02
+
+Ay10 = (0.37)*((Ax2)**5) - 0.02
+Ay11 = (0.37)*((Ax5)**5) - 0.02
+Ay12 = (0.37)*((Ax8)**5) - 0.02
+
+
+# define arrows to represent electric field at observation locations    
+Earrow1 = arrow(pos=vector(Ax1,Ay1,0), axis=vector(0.1,0,0), color=color.orange)
+Earrow2 = arrow(pos=vector(Ax2,Ay2,0), axis=vector(0.1,0,0), color=color.orange)
+Earrow3 = arrow(pos=vector(Ax3,Ay3,0), axis=vector(0.1,0,0), color=color.orange)
+Earrow4 = arrow(pos=vector(Ax4,Ay4,0), axis=vector(0.1,0,0), color=color.orange)
+Earrow5 = arrow(pos=vector(Ax5,Ay5,0), axis=vector(0.1,0,0), color=color.orange)
+Earrow6 = arrow(pos=vector(Ax6,Ay6,0), axis=vector(0.1,0,0), color=color.orange)
+Earrow7 = arrow(pos=vector(Ax7,Ay7,0), axis=vector(0.1,0,0), color=color.orange)
+Earrow8 = arrow(pos=vector(Ax8,Ay8,0), axis=vector(0.1,0,0), color=color.orange)
+Earrow9 = arrow(pos=vector(Ax9,Ay9,0), axis=vector(0.1,0,0), color=color.orange)
+
+Earrow10 = arrow(pos=vector(Ax2,Ay10,0), axis=vector(0.1,0,0), color=color.orange)
+Earrow11 = arrow(pos=vector(Ax5,Ay11,0), axis=vector(0.1,0,0), color=color.orange)
+Earrow12 = arrow(pos=vector(Ax8,Ay12,0), axis=vector(0.1,0,0), color=color.orange)
+
+## CALCULATIONS of  E field
+Enet1 = vector(0,0,0)  ## Initialize Net Electric Fields; starts out at zero and should build up 
+Enet2 = vector(0,0,0)
+Enet3 = vector(0,0,0)
+Enet4 = vector(0,0,0)
+Enet5 = vector(0,0,0)
+Enet6 = vector(0,0,0)
+Enet7 = vector(0,0,0)
+Enet8 = vector(0,0,0)
+Enet9 = vector(0,0,0)
+Enet10 = vector(0,0,0)
+Enet11 = vector(0,0,0)
+Enet12 = vector(0,0,0)
+
+xq = x_init
+yq = 0.37 * xq**5
+while xq < x_final:
+    ## Calculate the source location as a vector:
+    sourcelocation = vector(xq,yq,0)
+    ## Calculate the field dE's (vector) contributed by each charge to the field
+    ## at each observation location (the tail of each arrow).
+    r1=Earrow1.pos-sourcelocation
+    rmag1=mag(r1)
+    rhat1=r1/rmag1
+    dE1=oofpez*dQ/rmag1/rmag1*rhat1
+    
+    r2=Earrow2.pos-sourcelocation
+    rmag2=mag(r2)
+    rhat2=r2/rmag2
+    dE2=oofpez*dQ/rmag2/rmag2*rhat2
+
+    r3=Earrow3.pos-sourcelocation
+    rmag3=mag(r3)
+    rhat3=r3/rmag3
+    dE3=oofpez*dQ/rmag3/rmag3*rhat3
+
+    r4=Earrow4.pos-sourcelocation
+    rmag4=mag(r4)
+    rhat4=r4/rmag4
+    dE4=oofpez*dQ/rmag4/rmag4*rhat4
+
+    r5=Earrow5.pos-sourcelocation
+    rmag5=mag(r5)
+    rhat5=r5/rmag5
+    dE5=oofpez*dQ/rmag5/rmag5*rhat5
+
+    r6=Earrow6.pos-sourcelocation
+    rmag6=mag(r6)
+    rhat6=r6/rmag6
+    dE6=oofpez*dQ/rmag6/rmag6*rhat6
+
+    r7=Earrow7.pos-sourcelocation
+    rmag7=mag(r7)
+    rhat7=r7/rmag7
+    dE7=oofpez*dQ/rmag7/rmag7*rhat7
+
+    r8=Earrow8.pos-sourcelocation
+    rmag8=mag(r8)
+    rhat8=r8/rmag8
+    dE8=oofpez*dQ/rmag8/rmag8*rhat8
+
+    r9=Earrow9.pos-sourcelocation
+    rmag9=mag(r9)
+    rhat9=r9/rmag9
+    dE9=oofpez*dQ/rmag9/rmag9*rhat9
+    
+    r10=Earrow10.pos-sourcelocation
+    rmag10=mag(r10)
+    rhat10=r10/rmag10
+    dE10=oofpez*dQ/rmag10/rmag10*rhat10
+    
+    r11=Earrow11.pos-sourcelocation
+    rmag11=mag(r11)
+    rhat11=r11/rmag11
+    dE11=oofpez*dQ/rmag11/rmag11*rhat11
+    
+    r12=Earrow12.pos-sourcelocation
+    rmag12=mag(r12)
+    rhat12=r12/rmag12
+    dE12=oofpez*dQ/rmag12/rmag12*rhat12
+    
+    ## Add each field contribution dE to the corresponding Enet:
+    Enet1=Enet1+dE1
+    Enet2=Enet2+dE2
+    Enet3=Enet3+dE3
+    Enet4=Enet4+dE4
+    Enet5=Enet5+dE5
+    Enet6=Enet6+dE6
+    Enet7=Enet7+dE7
+    Enet8=Enet8+dE8
+    Enet9=Enet9+dE9
+    Enet10=Enet10+dE10
+    Enet11=Enet11+dE11
+    Enet12=Enet12+dE12
+    ## Move to the next source location:
+    xq = xq + dxq(xq)
+    yq = 0.37 * xq**5
+
+## Change the axis of Earrow to point in the direction of Enet and
+## scale it so it looks reasonable:
+Earrow1.axis=Enet1/4200.
+Earrow2.axis=Enet2/4200.
+Earrow3.axis=Enet3/4200.
+Earrow4.axis=Enet4/4200.
+Earrow5.axis=Enet5/4200.
+Earrow6.axis=Enet6/4200.
+Earrow7.axis=Enet7/4200.
+Earrow8.axis=Enet8/4200.
+Earrow9.axis=Enet9/4200.
+Earrow10.axis=Enet10/4200.
+Earrow11.axis=Enet11/4200.
+Earrow12.axis=Enet12/4200.
+## The following is helpful for checking if there are sufficient charges for the answer to converge.
+E1string = str(Enet1)  ## converts variable to string for printing in label
+label( pos=Earrow1.pos+vec(-.2,.1,0), text=E1string )## prints E near end
+E5string = str(Enet5)  ## converts variable to string for printing in label
+label( pos=Earrow5.pos+vec(0,.2,0), text=E5string )## prints E at center
